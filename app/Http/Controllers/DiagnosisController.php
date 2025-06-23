@@ -120,4 +120,27 @@ class DiagnosisController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get the most common diagnosis.
+     */
+    public function mostCommon()
+    {
+        try {
+            $diagnosis = $this->diagnosisService->getMostCommonDiagnosis();
+
+            if ($diagnosis->isEmpty()) {
+                return response()->json(['message' => 'No diagnoses found'], 404);
+            }
+
+            return response()->json($diagnosis, 200);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching most common diagnosis', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'An error occurred while fetching the most common diagnosis.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

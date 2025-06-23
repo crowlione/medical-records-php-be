@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Patient;
+use Illuminate\Database\Eloquent\Collection;
 
 class PatientService
 {
@@ -35,5 +36,31 @@ class PatientService
         $patient->save();
 
         return $patient;
+    }
+
+    public function getPatientsByDiagnosis($diagnosisId): Collection
+    {
+        return $this->patient
+            ->select('patients.*')
+            ->join('visits', 'patients.id', '=', 'visits.patient_id')
+            ->join('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
+            ->where('diagnosis_visit.diagnosis_id', $diagnosisId)
+            ->get();
+    }
+
+    public function getPatientsByGp($gpId): Collection
+    {
+        return $this->patient
+            ->select('patients.*')
+            ->where('gp_id', $gpId)
+            ->get();
+    }
+
+    public function countPatientsByGps()
+    {
+        return $this->patient
+            ->selectRaw('gp_id, COUNT(*) as patient_count')
+            ->groupBy('gp_id')
+            ->get();
     }
 }

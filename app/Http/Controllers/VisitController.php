@@ -128,4 +128,14 @@ class VisitController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Visit count for a specific doctor.
+     */
+    public function doctor(string $doctorId)
+    {
+        $doctorId = $this->validateResourceId($doctorId, 'Doctor');
+        $count = $this->visitService->countVisitsByDoctor($doctorId);
+        return response()->json(['count' => $count], 200);
+    }
 }

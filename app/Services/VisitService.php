@@ -46,4 +46,11 @@ class VisitService
 
         return $visit;
     }
+
+    public function countVisitsByDoctor($doctorId): int
+    {
+        return $this->visit
+            ->where('doctor_id', $doctorId)
+            ->count();
+    }
 }

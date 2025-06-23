@@ -54,6 +54,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [PatientController::class, 'destroy'])
             ->name('patients.destroy')
             ->where('id', '[0-9]+');
+
+        Route::get('/diagnosis/{diagnosis}', [PatientController::class, 'diagnosis'])
+            ->name('patients.diagnosis')
+            ->where('diagnosis', '[0-9]+');
+
+        Route::get('/gp/{gp}', [PatientController::class, 'gp'])
+            ->name('patients.gp')
+            ->where('gp', '[0-9]+');
+
+        Route::get('/count/gps', [PatientController::class, 'countByGps'])
+            ->name('patients.count.gps')
     });
 
     Route::group(['prefix' => 'sick-leaves'], function () {
@@ -94,6 +105,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [DiagnosisController::class, 'destroy'])
             ->name('diagnoses.destroy')
             ->where('id', '[0-9]+');
+
+        Route::get('/most-common', [DiagnosisController::class, 'mostCommon'])
+            ->name('diagnoses.mostCommon')
     });
 
 
@@ -115,5 +129,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [VisitController::class, 'destroy'])
             ->name('visits.destroy')
             ->where('id', '[0-9]+');
+        Route::get('/doctor/{doctor}', [VisitController::class, 'doctor'])
+            ->name('visits.doctor')
+            ->where('doctor', '[0-9]+')
     });
 });

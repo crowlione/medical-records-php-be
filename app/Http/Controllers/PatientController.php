@@ -132,4 +132,35 @@ class PatientController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all patients with a specific diagnosis.
+     */
+    public function diagnosis(string $diagnosisId)
+    {
+        $diagnosisId = $this->validateResourceId($diagnosisId, 'Diagnosis');
+
+        $patients = $this->patientService->getPatientsByDiagnosis($diagnosisId);
+        return response()->json($patients, 200);
+    }
+
+    /**
+     * Get all patients for a specific GP.
+     */
+    public function gp(string $gpId)
+    {
+        $gpId = $this->validateResourceId($gpId, 'Doctor');
+
+        $patients = $this->patientService->getPatientsByGp($gpId);
+        return response()->json($patients, 200);
+    }
+
+    /**
+     * Count all patients by GP.
+     */
+    public function countByGps()
+    {
+        $counts = $this->patientService->countPatientsByGps();
+        return response()->json($counts, 200);
+    }
 }
