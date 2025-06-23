@@ -19,22 +19,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //User::factory(10)->create();
-
-        User::factory()->create([
-            'email' => 'patient@example.com',
-            'role' => 'patient',
-        ]);
-
-        User::factory()->create([
-            'email' => 'doctor@example.com',
-            'role' => 'doctor',
-        ]);
-
-        Patient::factory()->create(['user_id' => 1]);
-
         Specialty::factory()->count(10)->create();
-        Doctor::factory()->create(['user_id' => 2]);
+        Doctor::factory()->count(6)->create();
+        Patient::factory()->count(6)->create();
 
         // Uncomment the following lines to seed sick leaves
         SickLeave::factory(10)->create();

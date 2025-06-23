@@ -24,7 +24,9 @@ class DoctorFactory extends Factory
             'phone' => fake()->optional()->phoneNumber(),
             'uin' => fake()->unique()->numerify('##########'),
             'is_gp' => fake()->boolean(),
-            'user_id' => User::factory(),
+            'user_id' => User::factory([
+                'role' => 'doctor',
+            ])->create()->id,
         ];
     }
 
