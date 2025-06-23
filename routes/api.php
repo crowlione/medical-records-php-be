@@ -2,12 +2,19 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\SickLeaveController;
 use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\VisitController;
+
+use App\Models\Patient;
+use App\Models\Doctor;
+use App\Models\Diagnosis;
+use App\Models\SickLeave;
+use App\Models\Visit;
 
 Route::post('/register/patient', [AuthController::class, 'registerPatient']);
 Route::post('/register/doctor', [AuthController::class, 'registerDoctor']);
@@ -18,10 +25,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'doctors'], function () {
         Route::get('/', [DoctorController::class, 'index'])
-            ->name('doctors.index');
+            ->name('doctors.index')
+            ->can('viewAny', Doctor::class);
 
         Route::post('/', [DoctorController::class, 'store'])
-            ->name('doctors.store');
+            ->name('doctors.store')
+            ->can('create', Doctor::class);
 
         Route::get('/{id}', [DoctorController::class, 'show'])
             ->name('doctors.show')
@@ -38,10 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'patients'], function () {
         Route::get('/', [PatientController::class, 'index'])
-            ->name('patients.index');
+            ->name('patients.index')
+            ->can('viewAny', Patient::class);
 
         Route::post('/', [PatientController::class, 'store'])
-            ->name('patients.store');
+            ->name('patients.store')
+            ->can('create', Patient::class);
 
         Route::get('/{id}', [PatientController::class, 'show'])
             ->name('patients.show')
@@ -65,14 +76,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/count/gps', [PatientController::class, 'countByGps'])
             ->name('patients.count.gps')
+            ->can('countByGps', Patient::class);
     });
 
     Route::group(['prefix' => 'sick-leaves'], function () {
         Route::get('/', [SickLeaveController::class, 'index'])
-            ->name('sick-leaves.index');
+            ->name('sick-leaves.index')
+            ->can('viewAny', SickLeave::class);
 
         Route::post('/', [SickLeaveController::class, 'store'])
-            ->name('sick-leaves.store');
+            ->name('sick-leaves.store')
+            ->can('create', SickLeave::class);
 
         Route::get('/{id}', [SickLeaveController::class, 'show'])
             ->name('sick-leaves.show')
@@ -89,10 +103,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['prefix' => 'diagnoses'], function () {
         Route::get('/', [DiagnosisController::class, 'index'])
-            ->name('diagnoses.index');
+            ->name('diagnoses.index')
+            ->can('viewAny', Diagnosis::class);
 
         Route::post('/', [DiagnosisController::class, 'store'])
-            ->name('diagnoses.store');
+            ->name('diagnoses.store')
+            ->can('create', Diagnosis::class);
 
         Route::get('/{id}', [DiagnosisController::class, 'show'])
             ->name('diagnoses.show')
@@ -108,15 +124,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('/most-common', [DiagnosisController::class, 'mostCommon'])
             ->name('diagnoses.mostCommon')
+            ->can('viewAny', Diagnosis::class);
     });
 
 
     Route::group(['prefix' => 'visits'], function () {
         Route::get('/', [VisitController::class, 'index'])
-            ->name('visits.index');
+            ->name('visits.index')
+            ->can('viewAny', Visit::class);
 
         Route::post('/', [VisitController::class, 'store'])
-            ->name('visits.store');
+            ->name('visits.store')
+            ->can('create', Visit::class);
 
         Route::get('/{id}', [VisitController::class, 'show'])
             ->name('visits.show')
@@ -129,8 +148,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [VisitController::class, 'destroy'])
             ->name('visits.destroy')
             ->where('id', '[0-9]+');
+
         Route::get('/doctor/{doctor}', [VisitController::class, 'doctor'])
             ->name('visits.doctor')
             ->where('doctor', '[0-9]+')
+            ->can('viewAllDoctorVisits', Visit::class);
     });
 });

@@ -7,9 +7,11 @@ use App\Models\Patient;
 use App\Services\PatientService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PatientController extends Controller
 {
+    use AuthorizesRequests;
     public function __construct(private Patient $patient, private PatientService $patientService, private UserService $userService)
     {
     }
@@ -66,6 +68,8 @@ class PatientController extends Controller
         $id = $this->validateResourceId($id, 'Patient');
 
         $patient = $this->patientService->getPatientById($id);
+
+        $this->authorize('view', $patient);
 
         if (!$patient) {
             return response()->json(['message' => 'Patient not found'], 404);
