@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -33,9 +34,9 @@ class AuthController extends Controller
         $user = $this->userService->createPatientUser($validated);
         $user->load('patient');
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        Auth::login($user);
         return response()->json([
-            'token' => $token,
+            'message' => 'Registered and logged in successfully.',
             'user' => $user
         ], 201);
     }
@@ -58,9 +59,9 @@ class AuthController extends Controller
         $user = $this->userService->createDoctorUser($validated);
         $user->load('doctor');
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        Auth::login($user);
         return response()->json([
-            'token' => $token,
+            'message' => 'Registered and logged in successfully.',
             'user' => $user
         ], 201);
     }
@@ -90,10 +91,12 @@ class AuthController extends Controller
             $user->load('doctor');
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        // $token = $user->createToken('api-token')->plainTextToken;
+        Auth::attempt($request->only('email', 'password'));
+        $request->session()->regenerate();
 
         return response()->json([
-            'token' => $token,
+            'message' => 'Logged in successfully.',
             'user' => $user,
         ]);
     }
@@ -103,7 +106,10 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
