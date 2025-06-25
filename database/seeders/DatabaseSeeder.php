@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         Specialty::factory()->count(10)->create();
         Doctor::factory()->count(6)->create();
-        Patient::factory()->count(6)->create();
+        Patient::factory()->count(20)->create();
 
         // Uncomment the following lines to seed sick leaves
         SickLeave::factory(10)->create();

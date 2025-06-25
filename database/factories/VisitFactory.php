@@ -20,10 +20,10 @@ class VisitFactory extends Factory
     public function definition(): array
     {
         return [
-            'patient_id' => Patient::factory(),
-            'doctor_id' => Doctor::factory(),
             'visit_date' => fake()->dateTimeBetween('-1 year', 'now'),
             'treatment' => fake()->sentence(),
+            'patient_id' => Patient::inRandomOrder()->first()->id,
+            'doctor_id' => Doctor::inRandomOrder()->first()->id,
         ];
     }
 
