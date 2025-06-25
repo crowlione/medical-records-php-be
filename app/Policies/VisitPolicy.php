@@ -21,14 +21,8 @@ class VisitPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Doctors can view all visits, but patients can only view their own
-        if ($user->isDoctor()) {
-            return true;
-        }
-        if ($user->isPatient() && $user->patient->visits()->exists()) {
-            return true;
-        }
-        return false;
+        // Any user can view, patients can only view their own visits
+        return true;
     }
 
     /**

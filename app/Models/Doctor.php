@@ -47,4 +47,12 @@ class Doctor extends Model
     {
         return $this->hasMany(Patient::class, 'gp_id');
     }
+
+    /**
+     * Get the visits for the doctor.
+     */
+    public function visits()
+    {
+        return $this->hasMany(Visit::class);
+    }
 }

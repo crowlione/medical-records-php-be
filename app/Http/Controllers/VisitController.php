@@ -18,7 +18,28 @@ class VisitController extends Controller
      */
     public function index()
     {
-        $visits = $this->visit->all();
+        // if user is patient, return only their visits
+        if (auth()->user()->isPatient()) {
+            $patientId = auth()->user()->patient->id;
+            $visits = $this->visit
+                ->select('visits.*')
+                ->join('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
+                ->join('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
+                ->where('patient_id', $patientId)
+                ->with(['doctor', 'sickLeave', 'diagnoses'])
+                ->distinct()
+                ->get();
+        } else {
+            // if user is doctor or admin, return all visits
+            $visits = $this->visit
+                ->select('visits.*')
+                ->join('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
+                ->join('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
+                ->with(['patient', 'doctor', 'sickLeave', 'diagnoses'])
+                ->distinct()
+                ->get();
+        }
+
 
         return response()->json($visits, 200);
     }
