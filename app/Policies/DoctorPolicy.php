@@ -21,8 +21,8 @@ class DoctorPolicy
      */
     public function viewAny(User $user): bool
     {
-        // doctors can view all patients, but patients can't
-        return $user->isDoctor();
+        // everyone can view
+        return true;
     }
 
     /**

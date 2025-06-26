@@ -16,7 +16,7 @@ use App\Models\Visit;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function () {
-        return response()->json(auth()->user());
+        return response()->json(auth()->user()->load('patient', 'doctor'), 200);
     })->name('user');
 
     Route::group(['prefix' => 'doctors'], function () {

@@ -23,20 +23,22 @@ class VisitController extends Controller
             $patientId = auth()->user()->patient->id;
             $visits = $this->visit
                 ->select('visits.*')
-                ->join('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
-                ->join('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
+                ->leftJoin('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
+                ->leftJoin('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
                 ->where('patient_id', $patientId)
                 ->with(['doctor', 'sickLeave', 'diagnoses'])
                 ->distinct()
+                ->orderBy('visit_date', 'desc')
                 ->get();
         } else {
             // if user is doctor or admin, return all visits
             $visits = $this->visit
                 ->select('visits.*')
-                ->join('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
-                ->join('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
+                ->leftJoin('diagnosis_visit', 'visits.id', '=', 'diagnosis_visit.visit_id')
+                ->leftJoin('diagnoses', 'diagnosis_visit.diagnosis_id', '=', 'diagnoses.id')
                 ->with(['patient', 'doctor', 'sickLeave', 'diagnoses'])
                 ->distinct()
+                ->orderBy('visit_date', 'desc')
                 ->get();
         }
 
